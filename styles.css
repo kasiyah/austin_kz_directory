@@ -1,34 +1,41 @@
 body {
-    margin: 0;
-    background-color: #DBF5F0;
+    margin: 0px;
     padding: 0px;
+    background-color: #DBF5F0;
 }
 
 .header {
     text-align: center;
     font-family: cursive;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .taxes {
-    text-align: justify;
+    text-align: left;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
     top: 150;
     left: 50;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .beauty {
-    text-align: justify;
+    text-align: left;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
     top: 430;
-    left: 50
+    left: 50;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .cakes {
-    text-align: justify;
+    text-align: left;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
     top: 650;
-    left: 50
+    left: 50;margin-left: auto;
+    margin-right: auto;
 }
