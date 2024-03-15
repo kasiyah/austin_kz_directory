@@ -18,23 +18,27 @@ body {
     position: absolute; 
     top: 150;
     left: 50;
-    width: 750px;
+    width: 1200px;
 }
 
 .beauty {
     text-align: justify;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
-    top: 420;
+    top: 330;
     left: 50;
-    width: 750px;
+    width: 1200px;
 }
 
 .cakes {
     text-align: justify;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
-    top: 640;
+    top: 490;
     left: 50;
-    width: 750px;
+    width: 1200px;
+}
+
+table, th, td {
+    border: 1px solid pink;
 }
