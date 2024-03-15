@@ -12,7 +12,7 @@ body {
     width: 750px;
 }
 
-.taxes {
+.businesses {
     text-align: justify;
     font-family: Arial, Helvetica, sans-serif;
     position: absolute; 
@@ -21,23 +21,6 @@ body {
     width: 1200px;
 }
 
-.beauty {
-    text-align: justify;
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute; 
-    top: 330;
-    left: 50;
-    width: 1200px;
-}
-
-.cakes {
-    text-align: justify;
-    font-family: Arial, Helvetica, sans-serif;
-    position: absolute; 
-    top: 490;
-    left: 50;
-    width: 1200px;
-}
 
 table, th, td {
     border: 1px solid pink;
