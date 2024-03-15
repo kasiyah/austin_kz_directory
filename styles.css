@@ -6,8 +6,9 @@ body {
 
 .header {
     text-align: center;
-    position: absolute;
     font-family: cursive;
+    top: 10px;
+    left: 475px;
 }
 
 .taxes {
