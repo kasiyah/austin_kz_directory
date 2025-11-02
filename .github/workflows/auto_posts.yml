@@ -1,9 +1,9 @@
 name: Auto Generate Business Posts
 
 on:
+  workflow_dispatch:     # manual trigger
   schedule:
     - cron: '0 6 * * *'  # runs daily at 6am UTC
-  workflow_dispatch:     # manual trigger
 
 jobs:
   build:
