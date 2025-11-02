@@ -1,5 +1,5 @@
 ---
-title: "Ainur Zhunusova"
+title: "Ainura Zhunusova"
 category: "Bookkeeping"
 date: 2025-11-02
 tags: [bookkeeping]
