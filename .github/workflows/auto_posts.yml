@@ -41,7 +41,7 @@ jobs:
       env:
         PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
 
-    # 6️⃣ Set up Ruby 3.1 before any Bundler command
+    # 6️⃣ Set up Ruby 3.1 (for Jekyll)
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
@@ -53,10 +53,20 @@ jobs:
         gem install bundler -v 2.6.9
         bundle install
 
-    # 8️⃣ Build and deploy Jekyll site
-    - name: Build and deploy Jekyll site
-      uses: helaili/jekyll-action@v2
-      with:
-        token: ${{ secrets.PERSONAL_TOKEN }}
-        target_branch: gh-pages
-        build_dir: _site
+    # 8️⃣ Build Jekyll site manually
+    - name: Build Jekyll site
+      run: bundle exec jekyll build
+
+    # 9️⃣ Deploy `_site` to GitHub Pages
+    - name: Deploy site to gh-pages
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+        git checkout -B gh-pages
+        git rm -rf .
+        cp -R _site/* .
+        git add .
+        git commit -m "Deploy site"
+        git push https://$PERSONAL_TOKEN@github.com/kasiyah/austin_kz_directory.git gh-pages --force
+      env:
+        PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
