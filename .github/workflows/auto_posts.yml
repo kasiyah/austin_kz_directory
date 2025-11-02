@@ -42,8 +42,8 @@ jobs:
         git config --global user.email "github-actions[bot]@users.noreply.github.com"
         git add _posts/*.md
         git commit -m "Auto-generate business posts from CSV" || echo "No changes to commit"
-        # Pull remote changes first to avoid 'branch tip behind' error
-        git pull --rebase origin main || echo "No remote changes"
+        git fetch origin main
+        git rebase origin/main || echo "No rebase needed"
         git push origin main
 
     # 6️⃣ Build and deploy Jekyll site
