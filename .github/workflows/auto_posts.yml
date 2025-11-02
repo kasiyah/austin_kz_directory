@@ -41,16 +41,16 @@ jobs:
       env:
         PERSONAL_TOKEN: ${{ secrets.PERSONAL_TOKEN }}
 
-    # 6️⃣ Set up Ruby 3.1 (for Jekyll Theme)
+    # 6️⃣ Set up Ruby 3.1 before any Bundler command
     - name: Set up Ruby
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.1
 
-    # 7️⃣ Install Jekyll dependencies
+    # 7️⃣ Install Bundler and Jekyll dependencies
     - name: Install Jekyll dependencies
       run: |
-        gem install bundler
+        gem install bundler -v 2.6.9
         bundle install
 
     # 8️⃣ Build and deploy Jekyll site
