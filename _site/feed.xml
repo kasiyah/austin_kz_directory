@@ -1,0 +1,131 @@
+
+
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <id>https://kasiyah.github.io/austin_kz_directory/</id>
+  <title>Austin KZ</title>
+  <subtitle>This is a basic directory created by Austin KZ Girls to better navigate around Austin and its surrounding areas.</subtitle>
+  <updated>2025-11-02T22:09:03-06:00</updated>
+  <author>
+    <name>your_full_name</name>
+    <uri>https://kasiyah.github.io/austin_kz_directory/</uri>
+  </author>
+  <link rel="self" type="application/atom+xml" href="https://kasiyah.github.io/austin_kz_directory/feed.xml"/>
+  <link rel="alternate" type="text/html" hreflang="en"
+    href="https://kasiyah.github.io/austin_kz_directory/"/>
+  <generator uri="https://jekyllrb.com/" version="4.4.1">Jekyll</generator>
+  <rights> © 2025 your_full_name </rights>
+  <icon>/austin_kz_directory/assets/img/favicons/favicon.ico</icon>
+  <logo>/austin_kz_directory/assets/img/favicons/favicon-96x96.png</logo>
+
+
+  
+  <entry>
+    <title>ZenTax, LLC</title>
+    <link href="https://kasiyah.github.io/austin_kz_directory/posts/ZenTax/" rel="alternate" type="text/html" title="ZenTax, LLC" />
+    <published>2024-03-19T12:00:00-05:00</published>
+  
+    <updated>2024-03-19T12:00:00-05:00</updated>
+  
+    <id>https://kasiyah.github.io/austin_kz_directory/posts/ZenTax/</id>
+    <content type="text/html" src="https://kasiyah.github.io/austin_kz_directory/posts/ZenTax/" />
+    <author>
+      <name>your_full_name</name>
+    </author>
+
+  
+    
+    <category term="Taxes" />
+    
+  
+
+  <summary>Welcome to ZenTax  https://zentaxllc.taxdome.com    My name is Moldir, but you can call me Mira, and I am certified and qualified by the U.S. Internal Revenue Service (IRS) under the Annual Filing Season Program (AFSP). I have successfully passed all exams and have been approved for filing tax returns. My company specializes in preparing federal tax returns, as well as state declarations. I am ...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Your Majesty</title>
+    <link href="https://kasiyah.github.io/austin_kz_directory/posts/Your-Majesty/" rel="alternate" type="text/html" title="Your Majesty" />
+    <published>2024-03-18T12:00:00-05:00</published>
+  
+    <updated>2024-03-18T12:00:00-05:00</updated>
+  
+    <id>https://kasiyah.github.io/austin_kz_directory/posts/Your-Majesty/</id>
+    <content type="text/html" src="https://kasiyah.github.io/austin_kz_directory/posts/Your-Majesty/" />
+    <author>
+      <name>your_full_name</name>
+    </author>
+
+  
+    
+    <category term="Beauty" />
+    
+    <category term="Hair" />
+    
+    <category term="Nails" />
+    
+    <category term="Makeup" />
+    
+  
+
+  <summary>Beauty Salon  www.yourmajestysalon.com  We opened our doors in 2020 and we are excited for the future to come.  We have created an atmosphere to make our clients feel like they are walking into their home where they can relax and escape the daily hustle.  Our stylists are bound together by their commitment to flawless services and quality work, an intense passion for our craft, and a genuine lo...</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>Yuliana Diaz</title>
+    <link href="https://kasiyah.github.io/austin_kz_directory/posts/Yuliana-Diaz/" rel="alternate" type="text/html" title="Yuliana Diaz" />
+    <published>2024-03-18T12:00:00-05:00</published>
+  
+    <updated>2024-03-18T12:00:00-05:00</updated>
+  
+    <id>https://kasiyah.github.io/austin_kz_directory/posts/Yuliana-Diaz/</id>
+    <content type="text/html" src="https://kasiyah.github.io/austin_kz_directory/posts/Yuliana-Diaz/" />
+    <author>
+      <name>your_full_name</name>
+    </author>
+
+  
+    
+    <category term="Taxes" />
+    
+    <category term="Notary" />
+    
+    <category term="Translations" />
+    
+  
+
+  <summary>Accountant, CPA, Notary, Translation  Yuliana Diaz Phone: (512) 922-5418</summary>
+
+  </entry>
+
+  
+  <entry>
+    <title>EO CPA Tax &amp; Bookkeeping Services</title>
+    <link href="https://kasiyah.github.io/austin_kz_directory/posts/EO_CPA_Tax_&amp;_Bookkeeping_Services/" rel="alternate" type="text/html" title="EO CPA Tax &amp;amp; Bookkeeping Services" />
+    <published>2024-03-18T12:00:00-05:00</published>
+  
+    <updated>2024-03-18T12:00:00-05:00</updated>
+  
+    <id>https://kasiyah.github.io/austin_kz_directory/posts/EO_CPA_Tax_&amp;_Bookkeeping_Services/</id>
+    <content type="text/html" src="https://kasiyah.github.io/austin_kz_directory/posts/EO_CPA_Tax_&amp;_Bookkeeping_Services/" />
+    <author>
+      <name>your_full_name</name>
+    </author>
+
+  
+    
+    <category term="Taxes" />
+    
+    <category term="Bookkeeping Services" />
+    
+  
+
+  <summary>Taxes, Bookkeeping, Consultations  www.e-taxcpa.com  Our tax preparation services include    Individual Tax Preparation   IRS   Business Tax Return Preparation   State Returns   Sales Tax Returns     Ekaterina Osani is a highly motivated professional with a robust academic background. She holds a Bachelor’s in Accounting and a Masters in Taxation, which form the bedrock of her expertise. Ekater...</summary>
+
+  </entry>
+
+</feed>
+
+

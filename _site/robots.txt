@@ -1,0 +1,5 @@
+User-agent: *
+
+Disallow: /norobots/
+
+Sitemap: https://kasiyah.github.io/austin_kz_directory/sitemap.xml

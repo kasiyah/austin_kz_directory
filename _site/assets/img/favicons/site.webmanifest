@@ -1,0 +1,25 @@
+
+
+{
+  "name": "Austin KZ",
+  "short_name": "Austin KZ",
+  "description": "This is a basic directory created by Austin KZ Girls to better navigate around Austin and its surrounding areas.",
+  "icons": [
+    {
+      "src": "/austin_kz_directory/assets/img/favicons/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/austin_kz_directory/assets/img/favicons/web-app-manifest-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": "/austin_kz_directory/index.html",
+  "theme_color": "#2a1e6b",
+  "background_color": "#ffffff",
+  "display": "fullscreen"
+}
+
