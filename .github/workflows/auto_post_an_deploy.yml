@@ -20,7 +20,11 @@ jobs:
   auto_post:
     runs-on: ubuntu-latest
     steps:
-      # 0️⃣ Skip workflow if the last commit is by the bot
+      # 0️⃣ Checkout repository
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # 1️⃣ Skip workflow if the last commit is by the bot
       - name: Prevent self-trigger loop
         run: |
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
@@ -29,10 +33,6 @@ jobs:
             echo "Last commit was by the bot. Exiting workflow."
             exit 0
           fi
-
-      # 1️⃣ Checkout repository
-      - name: Checkout repository
-        uses: actions/checkout@v4
 
       # 2️⃣ Set up Python
       - name: Set up Python
