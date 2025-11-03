@@ -97,7 +97,7 @@ jobs:
         run: bundle install --jobs 4 --retry 3
 
       # 7️⃣ Build Jekyll site
-      - name: Build Jekyll site
+      - name: Build Jekyll siteg
         run: JEKYLL_ENV=production bundle exec jekyll build
 
       # 8️⃣ Upload site artifact for GitHub Pages
