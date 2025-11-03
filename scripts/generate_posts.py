@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from datetime import datetime
+from datetime import datetime, timezone
 from slugify import slugify  # pip install python-slugify
 
 # 1️⃣ CSV URL from published Google Sheet
@@ -14,15 +14,22 @@ posts_dir = "_posts"
 os.makedirs(posts_dir, exist_ok=True)
 
 # 4️⃣ Generate Markdown posts
+# Use UTC today, timezone-aware
+today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
 for index, row in df.iterrows():
     slug = slugify(row['Business Name'])
-    date = datetime.today().strftime("%Y-%m-%d")
-    filename = f"{posts_dir}/{date}-{slug}.md"
+    filename = f"{posts_dir}/{today}-{slug}.md"
+
+    # Optional: skip if file already exists
+    if os.path.exists(filename):
+        print(f"Skipping existing post: {filename}")
+        continue
 
     content = f"""---
 title: "{row['Business Name']}"
 category: "{row['Category']}"
-date: {date}
+date: {today}
 tags: [{row['Tag']}]
 ---
 
