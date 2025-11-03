@@ -1,9 +1,9 @@
 name: Auto Generate Business Posts & Deploy Jekyll Site
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:   # Manual trigger
   schedule:
-    - cron: '0 6 * * *'
+    - cron: '0 6 * * *'  # Daily at 6:00 UTC
   push:
     branches:
       - main
@@ -19,12 +19,13 @@ permissions:
 jobs:
   auto_post:
     runs-on: ubuntu-latest
+
     steps:
-      # 0️⃣ Checkout repository
+      # 1️⃣ Checkout repository first
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 1️⃣ Skip workflow if the last commit is by the bot
+      # 2️⃣ Prevent self-trigger loop (skip if last commit was by bot)
       - name: Prevent self-trigger loop
         run: |
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
@@ -34,23 +35,23 @@ jobs:
             exit 0
           fi
 
-      # 2️⃣ Set up Python
+      # 3️⃣ Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # 3️⃣ Install Python dependencies
+      # 4️⃣ Install Python dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas python-slugify
 
-      # 4️⃣ Generate business posts
+      # 5️⃣ Generate business posts from Google Sheet CSV
       - name: Generate business posts
         run: python scripts/generate_posts.py
 
-      # 5️⃣ Commit and push new posts
+      # 6️⃣ Commit and push new posts
       - name: Commit and push posts
         run: |
           git config --global user.name "github-actions[bot]"
@@ -63,29 +64,48 @@ jobs:
 
   build_and_deploy:
     runs-on: ubuntu-latest
-    needs: auto_post
+    needs: auto_post   # Wait for posts to be generated
+
     steps:
+      # 1️⃣ Checkout repository with full history
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
 
+      # 2️⃣ Pull latest changes (include posts just pushed)
+      - name: Pull latest changes
+        run: git pull origin main
+
+      # 3️⃣ Debug: list posts
+      - name: List posts
+        run: ls -l _posts
+
+      # 4️⃣ Setup Ruby
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
 
+      # 5️⃣ Install Bundler
       - name: Install Bundler
         run: gem install bundler
 
+      # 6️⃣ Install Jekyll dependencies
       - name: Install dependencies
         run: bundle install --jobs 4 --retry 3
 
+      # 7️⃣ Build Jekyll site
       - name: Build Jekyll site
         run: JEKYLL_ENV=production bundle exec jekyll build
 
-      - name: Upload artifact for GitHub Pages
+      # 8️⃣ Upload site artifact for GitHub Pages
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
 
+      # 9️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
