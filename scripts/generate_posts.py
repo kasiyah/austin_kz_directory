@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from datetime import datetime
 from slugify import slugify  # pip install python-slugify
+from zoneinfo import ZoneInfo  # Python 3.9+
 
 # 1️⃣ CSV URL from published Google Sheet
 csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj8rixng0uRdpfNuMpvLVbug5FbLqw1MiHlO2Tb4z06eaB7c3UE6DKpzS6svvZLDdKKgsx5CULcJM/pub?gid=0&single=true&output=csv"
@@ -14,8 +15,9 @@ posts_dir = "_posts"
 os.makedirs(posts_dir, exist_ok=True)
 
 # 4️⃣ Generate Markdown posts
-# Use UTC today, timezone-aware
-today = datetime.now().strftime("%Y-%m-%d")
+# Set desired timezone (US Central)
+central = ZoneInfo("America/Chicago")
+today = datetime.now(tz=central).strftime("%Y-%m-%d")
 
 for index, row in df.iterrows():
     slug = slugify(row['Business Name'])
