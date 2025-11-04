@@ -62,15 +62,16 @@ category: "{safe_str(row.get('Category'))}"
 date: {today}
 tags: [{tags_yaml}]
 ---
+{safe_str(row.get('Owner Name'))}
 
 {safe_str(row.get('Notes'))}
 
-owner: "{safe_str(row.get('Owner Name'))}"
-website: "{safe_str(row.get('Website'))}"
-email: "{safe_str(row.get('Email'))}"
-instagram: "{safe_str(row.get('Instagram'))}"
-facebook: "{safe_str(row.get('Facebook'))}"
+[{safe_str(row.get('Website'))}]({safe_str(row.get('Website'))})
+email: [{safe_str(row.get('Email'))}]({safe_str(row.get('Email'))})
 phone: "{safe_str(row.get('Phone'))}"
+[instagram] ({safe_str(row.get('Instagram'))})
+[facebook]({safe_str(row.get('Facebook'))})
+
 """
 
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
