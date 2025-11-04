@@ -21,11 +21,11 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1️⃣ Checkout repository first
+      # Checkout repository first
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 2️⃣ Prevent self-trigger loop (skip if last commit was by bot)
+      # ️Prevent self-trigger loop (skip if last commit was by bot)
       - name: Prevent self-trigger loop
         run: |
           LAST_COMMIT_AUTHOR=$(git log -1 --pretty=format:'%an')
@@ -35,23 +35,23 @@ jobs:
             exit 0
           fi
 
-      # 3️⃣ Set up Python
+      # Set up Python
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      # 4️⃣ Install Python dependencies
+      # Install Python dependencies
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install pandas python-slugify
 
-      # 5️⃣ Generate business posts from Google Sheet CSV
+      # Generate business posts from Google Sheet CSV
       - name: Generate business posts
         run: python scripts/generate_posts.py
 
-      # 6️⃣ Commit and push new posts
+      # Commit and push new posts
       - name: Commit and push posts
         run: |
           git config --global user.name "github-actions[bot]"
@@ -67,45 +67,51 @@ jobs:
     needs: auto_post   # Wait for posts to be generated
 
     steps:
-      # 1️⃣ Checkout repository with full history
+      # Checkout repository with full history
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: main
 
-      # 2️⃣ Pull latest changes (include posts just pushed)
+      # Pull latest changes (include posts just pushed)
       - name: Pull latest changes
         run: git pull origin main
 
-      # 3️⃣ Debug: list posts
+      # Debug: list posts
       - name: List posts
         run: ls -l _posts
 
-      # 4️⃣ Setup Ruby
+      # Setup Ruby
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.1
 
-      # 5️⃣ Install Bundler
+      # Install Bundler
       - name: Install Bundler
         run: gem install bundler
 
-      # 6️⃣ Install Jekyll dependencies
-      - name: Install dependencies
-        run: bundle install --jobs 4 --retry 3
+      # Install sass-embedded manually
+      - name: Install sass-embedded manually
+        run: gem install sass-embedded -v 1.63.6 --platform=ruby
 
-      # 7️⃣ Build Jekyll site
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+            bundle config set force_ruby_platform true 
+            bundle install --jobs 4 --retry 3
+
+      # Build Jekyll site
       - name: Build Jekyll siteg
         run: JEKYLL_ENV=production bundle exec jekyll build
 
-      # 8️⃣ Upload site artifact for GitHub Pages
+      # Upload site artifact for GitHub Pages
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: ./_site
 
-      # 9️⃣ Deploy to GitHub Pages
+      # Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
