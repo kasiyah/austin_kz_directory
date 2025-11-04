@@ -82,9 +82,11 @@ date: {today}
 tags: [{tags_yaml}]
 ---
 
-"{safe_str(row.get('Owner Name'))}"
+{safe_str(row.get('Owner Name'))}
 
 {safe_str(row.get('Notes'))}
+
+Address: {safe_str(row.get('Address'))}
 
 {links_section}
 """
