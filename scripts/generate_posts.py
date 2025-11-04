@@ -47,24 +47,30 @@ for _, row in df.iterrows():
     # Process multiple tags
     raw_tags = safe_str(row.get("Tag"))
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
+    
+    # Include region if present
+    region = str(row.get("Region", "")).strip()
+    if region:
+        tags_list.append(region)
+
     tags_yaml = ", ".join(tags_list)
 
     # Build content
     content = f"""---
 title: "{title_source}"
 category: "{safe_str(row.get('Category'))}"
+date: {today}
+tags: [{tags_yaml}]
+---
+
+{safe_str(row.get('Notes'))}
+
 owner: "{safe_str(row.get('Owner Name'))}"
 website: "{safe_str(row.get('Website'))}"
 email: "{safe_str(row.get('Email'))}"
 instagram: "{safe_str(row.get('Instagram'))}"
 facebook: "{safe_str(row.get('Facebook'))}"
 phone: "{safe_str(row.get('Phone'))}"
-date: {today}
-region: "{safe_str(row.get('Region'))}"
-tags: [{tags_yaml}]
----
-
-{safe_str(row.get('Notes'))}
 """
 
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
