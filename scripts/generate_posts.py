@@ -8,7 +8,7 @@ import glob
 # CSV URL from published Google Sheet
 csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj8rixng0uRdpfNuMpvLVbug5FbLqw1MiHlO2Tb4z06eaB7c3UE6DKpzS6svvZLDdKKgsx5CULcJM/pub?gid=0&single=true&output=csv"
 
-# Read CSV
+# Read the CSV
 df = pd.read_csv(csv_url)
 
 # Ensure _posts directory exists
