@@ -107,7 +107,9 @@ date: {today}
 tags: [{tags_yaml}]
 ---
 
-{owner_line}{safe_str(row.get('Notes'))}
+{owner_line}
+
+{safe_str(row.get('Notes'))}
 
 {links_section}
 """
