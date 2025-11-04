@@ -8,7 +8,7 @@ import glob
 # CSV URL from published Google Sheet
 csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj8rixng0uRdpfNuMpvLVbug5FbLqw1MiHlO2Tb4z06eaB7c3UE6DKpzS6svvZLDdKKgsx5CULcJM/pub?gid=0&single=true&output=csv"
 
-# Read CSV
+# Read the CSV
 df = pd.read_csv(csv_url)
 
 # Ensure _posts directory exists
@@ -53,7 +53,7 @@ for _, row in df.iterrows():
         continue
 
     # Process tags (dropdown may contain multiple)
-    raw_tags = safe_str(row.get("Tag")).replace("\n", ",").replace(";", ",")
+    raw_tags = safe_str(row.get("Tags")).replace("\n", ",").replace(";", ",")
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
 
     # Include region
