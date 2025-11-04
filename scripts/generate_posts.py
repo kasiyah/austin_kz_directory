@@ -56,10 +56,15 @@ for _, row in df.iterrows():
         skipped_count += 1
         continue
 
-    # Process multiple tags
+    # Process multiple tags robustly
     raw_tags = safe_str(row.get("Tag"))
+
+    # Replace common separators (newline, semicolon) with commas
+    raw_tags = raw_tags.replace("\n", ",").replace(";", ",")
+
+    # Split and clean
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
-    
+
     # Include region if present
     region = safe_str(row.get("Region"))
     if region:
@@ -97,7 +102,7 @@ for _, row in df.iterrows():
     owner_line = ""
     owner_name = safe_str(row.get("Owner Name"))
     if owner_name:
-        owner_line = f"**Owner:** {owner_name}\n\n"
+        owner_line = f"{owner_name}\n\n"
 
     # Build content
     content = f"""---
