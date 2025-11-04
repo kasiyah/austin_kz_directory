@@ -49,11 +49,30 @@ for _, row in df.iterrows():
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
     
     # Include region if present
-    region = str(row.get("Region", "")).strip()
+    region = safe_str(row.get("Region"))
     if region:
         tags_list.append(region)
 
     tags_yaml = ", ".join(tags_list)
+
+    # Prepare links section
+    links_section = ""
+    website = safe_str(row.get("Website"))
+    email = safe_str(row.get("Email"))
+    instagram = safe_str(row.get("Instagram"))
+    facebook = safe_str(row.get("Facebook"))
+    phone = safe_str(row.get("Phone"))
+
+    if website:
+        links_section += f"- Website: [{website}]({website})\n"
+    if email:
+        links_section += f"- Email: [{email}](mailto:{email})\n"
+    if instagram:
+        links_section += f"- Instagram: [{instagram}]({instagram})\n"
+    if facebook:
+        links_section += f"- Facebook: [{facebook}]({facebook})\n"
+    if phone:
+        links_section += f"- Phone: [{phone}](tel:{phone})\n"
 
     # Build content
     content = f"""---
@@ -62,16 +81,12 @@ category: "{safe_str(row.get('Category'))}"
 date: {today}
 tags: [{tags_yaml}]
 ---
-{safe_str(row.get('Owner Name'))}
+
+"{safe_str(row.get('Owner Name'))}"
 
 {safe_str(row.get('Notes'))}
 
-[{safe_str(row.get('Website'))}]({safe_str(row.get('Website'))})
-email: [{safe_str(row.get('Email'))}]({safe_str(row.get('Email'))})
-phone: "{safe_str(row.get('Phone'))}"
-[instagram] ({safe_str(row.get('Instagram'))})
-[facebook]({safe_str(row.get('Facebook'))})
-
+{links_section}
 """
 
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
