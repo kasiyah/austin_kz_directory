@@ -25,15 +25,17 @@ def safe_str(value):
         return ""
     return str(value).strip()
 
-def make_clickable_link(url, prefix=""):
-    """Return a Markdown clickable link if url exists, else empty string"""
-    url = safe_str(url)
-    if not url:
+def make_clickable_link(value, prefix=""):
+    """Return Markdown clickable link if value is not empty"""
+    value = safe_str(value)
+    if not value:
         return ""
-    # Add https:// if missing for websites
-    if prefix == "https://" and not url.startswith(("http://", "https://")):
-        url = prefix + url
-    return f"[{url}]({url})"
+    if prefix == "https://" and not value.startswith(("http://", "https://")):
+        value = prefix + value
+    if prefix == "mailto:":
+        return f"[{value}]({prefix}{value})"
+    else:
+        return f"[{value}]({value})"
 
 # Generate Markdown posts
 created_count = 0
@@ -65,28 +67,43 @@ for _, row in df.iterrows():
 
     tags_yaml = ", ".join(tags_list)
 
-    # Make clickable links
+    # Prepare clickable links
     website_link = make_clickable_link(row.get("Website"), prefix="https://")
-    email_link = make_clickable_link(f"mailto:{row.get('Email')}" if safe_str(row.get("Email")) else "")
+    email_link = make_clickable_link(row.get("Email"), prefix="mailto:")
     instagram_link = make_clickable_link(row.get("Instagram"), prefix="https://")
     facebook_link = make_clickable_link(row.get("Facebook"), prefix="https://")
+    phone_value = safe_str(row.get("Phone"))
+
+    links_section = ""
+    if any([website_link, email_link, instagram_link, facebook_link, phone_value]):
+        links = []
+        if website_link:
+            links.append(f"Website: {website_link}")
+        if email_link:
+            links.append(f"Email: {email_link}")
+        if instagram_link:
+            links.append(f"Instagram: {instagram_link}")
+        if facebook_link:
+            links.append(f"Facebook: {facebook_link}")
+        if phone_value:
+            links.append(f"Phone: {phone_value}")
+        # Join with two newlines for separate paragraphs
+        links_section = "\n\n".join(links)
 
     # Build content
     content = f"""---
 title: "{title_source}"
 category: "{safe_str(row.get('Category'))}"
-owner: "{safe_str(row.get('Owner Name'))}"
-phone: "{safe_str(row.get('Phone'))}"
 date: {today}
 tags: [{tags_yaml}]
 ---
+{safe_str(row.get('Owner Name'))}
 
 {safe_str(row.get('Notes'))}
 
-{website_link}
-{email_link}
-{instagram_link}
-{facebook_link}
+Address: {safe_str(row.get('Address'))}
+
+{links_section}
 """
 
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
