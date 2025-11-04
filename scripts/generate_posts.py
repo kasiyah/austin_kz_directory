@@ -55,4 +55,4 @@ tags: [{row['Tag']}]
     created_count += 1
     print(f"Created new post: {filename}")
 
-print(f"\n✅ {created_count} new posts created, {skipped_count} skipped (already exist).")
+print(f"\n!!! {created_count} new posts created, {skipped_count} skipped (already exist).")

@@ -75,8 +75,8 @@ jobs:
           ref: main
 
       # Pull latest changes (include posts just pushed)
-      - name: Pull latest changes
-        run: git pull origin main
+      # - name: Pull latest changes
+      #   run: git pull origin main
 
       # Debug: list posts
       - name: List posts
@@ -99,11 +99,11 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-            bundle config set force_ruby_platform true 
-            bundle install --jobs 4 --retry 3
+          bundle config set force_ruby_platform true 
+          bundle install --jobs 4 --retry 3
 
       # Build Jekyll site
-      - name: Build Jekyll siteg
+      - name: Build Jekyll site
         run: JEKYLL_ENV=production bundle exec jekyll build
 
       # Upload site artifact for GitHub Pages
