@@ -11,11 +11,11 @@ csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSgj8rixng0uRdpfNuMpv
 # Read CSV
 df = pd.read_csv(csv_url)
 
-# Make sure _posts directory exists
+# Ensure _posts directory exists
 posts_dir = "_posts"
 os.makedirs(posts_dir, exist_ok=True)
 
-# Set desired timezone (US Central)
+# Set timezone (US Central)
 central = ZoneInfo("America/Chicago")
 today = datetime.now(tz=central).strftime("%Y-%m-%d")
 
@@ -34,77 +34,64 @@ def make_clickable_link(value, prefix=""):
         value = prefix + value
     if prefix == "mailto:":
         return f"[{value}]({prefix}{value})"
-    else:
-        return f"[{value}]({value})"
+    return f"[{value}]({value})"
 
-# Generate Markdown posts
+# Counters
 created_count = 0
 skipped_count = 0
 
 for _, row in df.iterrows():
-    # Use Business Name or Owner Name if missing
-    title_source = safe_str(row.get("Business Name"))
-    if not title_source:
-        title_source = safe_str(row.get("Owner Name"))
-    
+    # Title source: Business Name or fallback to Owner Name
+    title_source = safe_str(row.get("Business Name")) or safe_str(row.get("Owner Name"))
     slug = slugify(title_source)
 
-    # Skip if post already exists
+    # Skip if post exists
     pattern = os.path.join(posts_dir, f"*-{slug}.md")
     if glob.glob(pattern):
         print(f"Skipping existing business: {title_source}")
         skipped_count += 1
         continue
 
-    # Process multiple tags robustly
-    raw_tags = safe_str(row.get("Tag"))
-
-    # Replace common separators (newline, semicolon) with commas
-    raw_tags = raw_tags.replace("\n", ",").replace(";", ",")
-
-    # Split and clean
+    # Process tags (dropdown may contain multiple)
+    raw_tags = safe_str(row.get("Tag")).replace("\n", ",").replace(";", ",")
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
 
-    # Include region if present
+    # Include region
     region = safe_str(row.get("Region"))
     if region:
         tags_list.append(region)
 
     tags_yaml = ", ".join(tags_list)
 
-    # Prepare clickable links
+    # Links section (only if exists)
     website_link = make_clickable_link(row.get("Website"), prefix="https://")
     email_link = make_clickable_link(row.get("Email"), prefix="mailto:")
     instagram_link = make_clickable_link(row.get("Instagram"), prefix="https://")
     facebook_link = make_clickable_link(row.get("Facebook"), prefix="https://")
     phone_value = safe_str(row.get("Phone"))
-    address_value = safe_str(row.get("Address"))  # Optional
+    address_value = safe_str(row.get("Address"))
 
-    links_section = ""
-    if any([website_link, email_link, instagram_link, facebook_link, phone_value, address_value]):
-        links = []
-        if website_link:
-            links.append(f"Website: {website_link}")
-        if email_link:
-            links.append(f"Email: {email_link}")
-        if instagram_link:
-            links.append(f"Instagram: {instagram_link}")
-        if facebook_link:
-            links.append(f"Facebook: {facebook_link}")
-        if phone_value:
-            links.append(f"Phone: {phone_value}")
-        if address_value:
-            links.append(f"Address: {address_value}")
-        # Join with two newlines for separate paragraphs
-        links_section = "\n\n".join(links)
+    links = []
+    if website_link:
+        links.append(f"Website: {website_link}")
+    if email_link:
+        links.append(f"Email: {email_link}")
+    if instagram_link:
+        links.append(f"Instagram: {instagram_link}")
+    if facebook_link:
+        links.append(f"Facebook: {facebook_link}")
+    if phone_value:
+        links.append(f"Phone: {phone_value}")
+    if address_value:
+        links.append(f"Address: {address_value}")
 
-    # Include owner line only if it exists
-    owner_line = ""
+    links_section = "\n\n".join(links) if links else ""
+
+    # Owner line before notes
     owner_name = safe_str(row.get("Owner Name"))
-    if owner_name:
-        owner_line = f"{owner_name}\n\n"
+    owner_line = f" {owner_name}\n\n" if owner_name else ""
 
-    # Build content
+    # Build Markdown content
     content = f"""---
 title: "{title_source}"
 category: "{safe_str(row.get('Category'))}"
@@ -112,13 +99,12 @@ date: {today}
 tags: [{tags_yaml}]
 ---
 
-{owner_line}
-
-{safe_str(row.get('Notes'))}
+{owner_line}{safe_str(row.get('Notes'))}
 
 {links_section}
 """
 
+    # Write file
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
     with open(filename, "w", encoding="utf-8") as f:
         f.write(content)
