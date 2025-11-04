@@ -24,26 +24,44 @@ created_count = 0
 skipped_count = 0
 
 for index, row in df.iterrows():
-    business_name  = row['Business Name']
-    slug = slugify(business_name)
+    title_source = str(row.get("Business Name")).strip()
+    if not title_source or title_source.lower() in ["nan", ""]:
+        title_source = str(row.get("Owner Name")).strip()
+    slug = slugify(title_source)
 
     # Look for existing post file with this slug, any date
     pattern = os.path.join(posts_dir, f"*-{slug}.md")
     existing_files = glob.glob(pattern)
 
     if existing_files:
-        print(f"Skipping existing business: {business_name}")
+        print(f"Skipping existing business: {title_source}")
         skipped_count += 1
         continue
 
     # Create new post
     filename = f"{posts_dir}/{today}-{slug}.md"
 
+     # Process multiple tags
+    raw_tags = str(row.get("Tag", "")).strip()
+    if raw_tags:
+        # Split on commas and strip spaces
+        tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
+        tags_yaml = ", ".join(tags_list)
+    else:
+        tags_yaml = ""
+
     content = f"""---
-title: "{row['Business Name']}"
-category: "{row['Category']}"
+title: "{title_source}"
+category: "{row.get('Category', '').strip()}"
+owner: "{row.get('Owner Name', '').strip()}"
+website: "{row.get('Website', '').strip()}"
+email: "{row.get('Email', '').strip()}"
+instagram: "{row.get('Instagram', '').strip()}"
+facebook: "{row.get('Facebook', '').strip()}"
+phone: "{row.get('Phone', '').strip()}"
 date: {today}
-tags: [{row['Tag']}]
+region: "{row.get('Region', '').strip()}"
+tags: [{tags_yaml}]
 ---
 
 {row['Notes']}
