@@ -73,9 +73,10 @@ for _, row in df.iterrows():
     instagram_link = make_clickable_link(row.get("Instagram"), prefix="https://")
     facebook_link = make_clickable_link(row.get("Facebook"), prefix="https://")
     phone_value = safe_str(row.get("Phone"))
+    address_value = safe_str(row.get("Address"))  # Optional
 
     links_section = ""
-    if any([website_link, email_link, instagram_link, facebook_link, phone_value]):
+    if any([website_link, email_link, instagram_link, facebook_link, phone_value, address_value]):
         links = []
         if website_link:
             links.append(f"Website: {website_link}")
@@ -87,8 +88,16 @@ for _, row in df.iterrows():
             links.append(f"Facebook: {facebook_link}")
         if phone_value:
             links.append(f"Phone: {phone_value}")
+        if address_value:
+            links.append(f"Address: {address_value}")
         # Join with two newlines for separate paragraphs
         links_section = "\n\n".join(links)
+
+    # Include owner line only if it exists
+    owner_line = ""
+    owner_name = safe_str(row.get("Owner Name"))
+    if owner_name:
+        owner_line = f"**Owner:** {owner_name}\n\n"
 
     # Build content
     content = f"""---
@@ -97,11 +106,8 @@ category: "{safe_str(row.get('Category'))}"
 date: {today}
 tags: [{tags_yaml}]
 ---
-{safe_str(row.get('Owner Name'))}
 
-{safe_str(row.get('Notes'))}
-
-Address: {safe_str(row.get('Address'))}
+{owner_line}{safe_str(row.get('Notes'))}
 
 {links_section}
 """
