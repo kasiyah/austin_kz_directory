@@ -53,7 +53,7 @@ for _, row in df.iterrows():
         continue
 
     # Process tags (dropdown may contain multiple)
-    raw_tags = safe_str(row.get("Tag")).replace("\n", ",").replace(";", ",")
+    raw_tags = safe_str(row.get("Tags")).replace("\n", ",").replace(";", ",")
     tags_list = [tag.strip() for tag in raw_tags.split(",") if tag.strip()]
 
     # Include region
