@@ -1,0 +1,15 @@
+---
+title: "Екатерина Осани"
+category: "Finance"
+date: 2025-11-04
+tags: []
+---
+
+Екатерина Осани
+
+CPA, EA, налоги/буккипинг/консультации
+
+Address: 
+
+- Website: [www.e-taxcpa.com](www.e-taxcpa.com)
+
