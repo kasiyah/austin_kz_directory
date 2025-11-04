@@ -2,7 +2,9 @@
 
 source "https://rubygems.org"
 
-# gem "jekyll-theme-chirpy", "~> 6.5", ">= 6.5.3"
+# Fix for GitHub Actions build (sass-embedded 1.93.3 fails on Linux)
+gem "sass-embedded", "1.63.6"
+
 gem 'jekyll-theme-chirpy', '~> 7.4', '>= 7.4.1'
 
 group :test do
