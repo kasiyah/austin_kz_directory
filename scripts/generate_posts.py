@@ -25,6 +25,16 @@ def safe_str(value):
         return ""
     return str(value).strip()
 
+def make_clickable_link(url, prefix=""):
+    """Return a Markdown clickable link if url exists, else empty string"""
+    url = safe_str(url)
+    if not url:
+        return ""
+    # Add https:// if missing for websites
+    if prefix == "https://" and not url.startswith(("http://", "https://")):
+        url = prefix + url
+    return f"[{url}]({url})"
+
 # Generate Markdown posts
 created_count = 0
 skipped_count = 0
@@ -55,40 +65,28 @@ for _, row in df.iterrows():
 
     tags_yaml = ", ".join(tags_list)
 
-    # Prepare links section
-    links_section = ""
-    website = safe_str(row.get("Website"))
-    email = safe_str(row.get("Email"))
-    instagram = safe_str(row.get("Instagram"))
-    facebook = safe_str(row.get("Facebook"))
-    phone = safe_str(row.get("Phone"))
-
-    if website:
-        links_section += f"- Website: [{website}]({website})\n"
-    if email:
-        links_section += f"- Email: [{email}](mailto:{email})\n"
-    if instagram:
-        links_section += f"- Instagram: [{instagram}]({instagram})\n"
-    if facebook:
-        links_section += f"- Facebook: [{facebook}]({facebook})\n"
-    if phone:
-        links_section += f"- Phone: [{phone}](tel:{phone})\n"
+    # Make clickable links
+    website_link = make_clickable_link(row.get("Website"), prefix="https://")
+    email_link = make_clickable_link(f"mailto:{row.get('Email')}" if safe_str(row.get("Email")) else "")
+    instagram_link = make_clickable_link(row.get("Instagram"), prefix="https://")
+    facebook_link = make_clickable_link(row.get("Facebook"), prefix="https://")
 
     # Build content
     content = f"""---
 title: "{title_source}"
 category: "{safe_str(row.get('Category'))}"
+owner: "{safe_str(row.get('Owner Name'))}"
+phone: "{safe_str(row.get('Phone'))}"
 date: {today}
 tags: [{tags_yaml}]
 ---
 
-{safe_str(row.get('Owner Name'))}
-
 {safe_str(row.get('Notes'))}
 
-Address: {safe_str(row.get('Address'))}
-
-{links_section}
+{website_link}
+{email_link}
+{instagram_link}
+{facebook_link}
 """
 
     filename = os.path.join(posts_dir, f"{today}-{slug}.md")
