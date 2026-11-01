@@ -1,5 +1,5 @@
 ---
-title: "Your Majesty Salon"
+title: "Your Majesty"
 category: "Beauty & Personal Care"
 date: 2026-11-01
 tags: []
