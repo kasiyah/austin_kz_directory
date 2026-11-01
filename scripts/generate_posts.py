@@ -1,15 +1,16 @@
 import pandas as pd
 import os
+import re
 from datetime import datetime
 from slugify import slugify  # pip install python-slugify
 from zoneinfo import ZoneInfo  # Python 3.9+
-import glob
 
 # CSV URL from published Google Sheet
 csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC5rCFcQcMSzcZdv9I1UkQdSjG2f1yA7gyrueAUjiR74amhx80ug92lksOA7NyeMTKwE7pBTvWaXFc/pub?gid=0&single=true&output=csv"
 
-# Read the CSV
-df = pd.read_csv(csv_url)
+# Read the CSV. dtype=str keeps phone numbers and similar values as text
+# (otherwise pandas can turn 5125551234 into 5125551234.0 when a column has blanks).
+df = pd.read_csv(csv_url, dtype=str)
 
 # Ensure _posts directory exists
 posts_dir = "_posts"
@@ -19,11 +20,18 @@ os.makedirs(posts_dir, exist_ok=True)
 central = ZoneInfo("America/Chicago")
 today = datetime.now(tz=central).strftime("%Y-%m-%d")
 
+
 def safe_str(value):
     """Convert value to string, return empty string if NaN or None"""
     if pd.isna(value):
         return ""
     return str(value).strip()
+
+
+def yaml_escape(value):
+    """Escape a value so it is safe inside double quotes in YAML front matter"""
+    return value.replace("\\", "\\\\").replace('"', '\\"')
+
 
 def make_clickable_link(value, prefix=""):
     """Return Markdown clickable link if value is not empty"""
@@ -36,21 +44,42 @@ def make_clickable_link(value, prefix=""):
         return f"[{value}]({prefix}{value})"
     return f"[{value}]({value})"
 
+
+def find_existing_post(slug):
+    """Find an existing post for this exact slug (date prefix + slug + .md).
+
+    A regex is used instead of the glob '*-slug.md' because that glob also
+    matches longer slugs, e.g. 'cafe' would match '2026-01-01-the-cafe.md'.
+    """
+    pattern = re.compile(rf"^\d{{4}}-\d{{2}}-\d{{2}}-{re.escape(slug)}\.md$")
+    for name in sorted(os.listdir(posts_dir)):
+        if pattern.match(name):
+            return os.path.join(posts_dir, name)
+    return None
+
+
 # Counters
 created_count = 0
-skipped_count = 0
+updated_count = 0
+unchanged_count = 0
 
 for _, row in df.iterrows():
     # Title source: Business Name or fallback to Owner Name
     title_source = safe_str(row.get("Business Name")) or safe_str(row.get("Owner Name"))
     slug = slugify(title_source)
 
-    # Skip if post exists
-    pattern = os.path.join(posts_dir, f"*-{slug}.md")
-    if glob.glob(pattern):
-        print(f"Skipping existing business: {title_source}")
-        skipped_count += 1
+    # Skip empty or junk rows
+    if not slug:
         continue
+
+    # If a post already exists, keep its file name (and original date)
+    existing = find_existing_post(slug)
+    if existing:
+        filename = existing
+        post_date = os.path.basename(existing)[:10]
+    else:
+        post_date = today
+        filename = os.path.join(posts_dir, f"{today}-{slug}.md")
 
     # Process tags (dropdown may contain multiple)
     raw_tags = safe_str(row.get("Tags")).replace("\n", ",").replace(";", ",")
@@ -61,7 +90,8 @@ for _, row in df.iterrows():
     if region:
         tags_list.append(region)
 
-    tags_yaml = ", ".join(tags_list)
+    # Quote each tag so characters like ':' or '&' cannot break the YAML
+    tags_yaml = ", ".join(f'"{yaml_escape(tag)}"' for tag in tags_list)
 
     # Links section (only if exists)
     website_link = make_clickable_link(row.get("Website"), prefix="https://")
@@ -93,9 +123,9 @@ for _, row in df.iterrows():
 
     # Build Markdown content
     content = f"""---
-title: "{title_source}"
-category: "{safe_str(row.get('Category'))}"
-date: {today}
+title: "{yaml_escape(title_source)}"
+category: "{yaml_escape(safe_str(row.get('Category')))}"
+date: {post_date}
 tags: [{tags_yaml}]
 ---
 
@@ -104,12 +134,23 @@ tags: [{tags_yaml}]
 {links_section}
 """
 
-    # Write file
-    filename = os.path.join(posts_dir, f"{today}-{slug}.md")
-    with open(filename, "w", encoding="utf-8") as f:
-        f.write(content)
+    if existing:
+        # Only rewrite the file if the sheet data actually changed
+        with open(filename, "r", encoding="utf-8") as f:
+            if f.read() == content:
+                unchanged_count += 1
+                continue
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(content)
+        updated_count += 1
+        print(f"Updated post: {filename}")
+    else:
+        with open(filename, "w", encoding="utf-8") as f:
+            f.write(content)
+        created_count += 1
+        print(f"Created new post: {filename}")
 
-    created_count += 1
-    print(f"Created new post: {filename}")
-
-print(f"\n!!! {created_count} new posts created, {skipped_count} skipped (already exist).")
+print(
+    f"\n!!! {created_count} created, {updated_count} updated, "
+    f"{unchanged_count} unchanged."
+)
