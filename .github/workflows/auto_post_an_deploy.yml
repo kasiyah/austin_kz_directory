@@ -2,8 +2,13 @@ name: Auto Generate Business Posts & Deploy Jekyll Site
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 6 * * *'
+  # # runs every day at 6:00 AM UTC (1:00 AM CDT)
+  # schedule:
+  #   - cron: '0 6 * * *'
+  repository_dispatch:
+    types: [sheet_updated]
+
+  # runs when changes are pushed to the main branch or when the listed files are modified
   push:
     branches: [main]
     paths:
@@ -11,15 +16,17 @@ on:
       - '.github/workflows/auto_post_and_deploy.yml'
 
 permissions:
-  contents: write
-  pages: write
-  id-token: write
+  contents: write # needed to commit and push the generated posts
+  pages: write    # needed to publish to GitHub Pages
+  id-token: write # needed so deploy-pages can verify the deployment source
 
+# prevents overlaping runs 
 concurrency:
-  group: pages
-  cancel-in-progress: false
+  group: pages              # runs in the same group wait for each other to finish before starting
+  cancel-in-progress: false # deployment already underway is never cancelled by a newer run
 
 jobs:
+  # generates business posts from a Google Sheet CSV and commits them to main branch
   auto_post:
     runs-on: ubuntu-latest
     steps:

@@ -6,7 +6,7 @@ from zoneinfo import ZoneInfo  # Python 3.9+
 import glob
 
 # CSV URL from published Google Sheet
-csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTRrQJLvlqmhqa-Jq43yn6gvGM8Pr2zfl-JpQbCbgdGpIDWdsxmKIyOPocg93gQEA/pub?gid=1048568801&single=true&output=csv"
+csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC5rCFcQcMSzcZdv9I1UkQdSjG2f1yA7gyrueAUjiR74amhx80ug92lksOA7NyeMTKwE7pBTvWaXFc/pub?gid=0&single=true&output=csv"
 
 # Read the CSV
 df = pd.read_csv(csv_url)
