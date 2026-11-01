@@ -14,7 +14,7 @@ csv_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTC5rCFcQcMSzcZdv9I1U
 df = pd.read_csv(csv_url, dtype=str)
 
 # Safety check: stop if the CSV looks wrong (empty, or Google returned
-# something unexpected). Exiting with an error means nothing gets committed.
+# something unexpected). Exiting with an error means nothing gets committed
 if df.empty or "Business Name" not in df.columns:
     print("ERROR: CSV is empty or has no 'Business Name' column. Nothing was changed.")
     sys.exit(1)
