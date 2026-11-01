@@ -3,6 +3,7 @@ title: "The UPS Store"
 category: "Notary & Shipping"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 In-store notary; source says $10–15 per page or document and recommends calling/appointment

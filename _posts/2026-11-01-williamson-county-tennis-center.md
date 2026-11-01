@@ -3,6 +3,7 @@ title: "Williamson County Tennis Center"
 category: "Sports & Recreation"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 North location; group lessons usually 2–5 people with a coach

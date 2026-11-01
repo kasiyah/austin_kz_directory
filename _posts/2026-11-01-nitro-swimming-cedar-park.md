@@ -3,6 +3,7 @@ title: "Nitro Swimming - Cedar Park"
 category: "Swimming & Aquatics"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 Professional swimming

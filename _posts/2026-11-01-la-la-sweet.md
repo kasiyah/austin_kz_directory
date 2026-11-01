@@ -3,6 +3,7 @@ title: "La La Sweet"
 category: "Bakery & Desserts"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
  Акмарал

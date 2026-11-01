@@ -3,6 +3,7 @@ title: "Shots for Tots"
 category: "Pediatric Healthcare"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 Children's vaccinations; source says can be without insurance

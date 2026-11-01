@@ -3,6 +3,7 @@ title: "Amber Fairy TX"
 category: "Retail / Specialty Goods"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 Natural Baltic amber jewelry for babies, children and adults; order via Instagram

@@ -3,6 +3,7 @@ title: "Austin Ducks"
 category: "Tours & Attractions"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 Duck boat/bus tour; combines downtown sightseeing and lake ride; children mentioned in source

@@ -3,6 +3,7 @@ title: "Elephant Room"
 category: "Entertainment & Nightlife"
 date: 2026-11-01
 tags: []
+auto_generated: true
 ---
 
 Jazz/stand-up venue mentioned in guest recommendations
