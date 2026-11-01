@@ -7,7 +7,7 @@ tags: []
 
  Айгерим
 
-Nail services, Russian Manicure
+Nail services
 
 
 Айгерим, Nails by Aiko https://www.instagram.com/aiko_nails.atx
