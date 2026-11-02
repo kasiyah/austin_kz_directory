@@ -1,0 +1,72 @@
+# =============================================================================
+# PR build check: test changes BEFORE they reach main.
+#
+# Runs on pull requests into main, and manually from any branch (Actions ->
+# "PR build check" -> Run workflow -> pick your branch). It runs the post
+# generator and builds the Jekyll site in a throwaway workspace, so nothing is
+# committed, pushed or deployed. Permissions are read-only on purpose.
+# =============================================================================
+name: PR build check
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read   # read-only: this workflow cannot push or deploy anything
+
+# A new push to the same branch cancels the older check (safe: nothing deploys).
+concurrency:
+  group: pr-check-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Download the branch being tested (for pull requests, the merged result).
+      - name: Checkout repository
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pandas python-slugify
+
+      # Runs THIS branch's version of the script against the real sheet data.
+      # The posts are written only into this temporary runner and then thrown
+      # away. If the script's safety checks fail, this step fails.
+      - name: Generate business posts (test run)
+        run: python scripts/generate_posts.py
+
+      # Lists which posts the script would create, update or delete, in the
+      # log and on the run's summary page.
+      - name: Show what the script would change
+        run: |
+          changes=$(git status --short _posts)
+          if [ -z "$changes" ]; then changes="(no changes)"; fi
+          echo "$changes"
+          {
+            echo "### Changes the script would make to _posts"
+            echo '```'
+            echo "$changes"
+            echo '```'
+            echo "Legend: ?? = new post, M = updated, D = deleted"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: '3.4'
+          bundler-cache: true
+
+      # Builds the whole site including the freshly generated posts. A broken
+      # front matter or template error fails here instead of on main.
+      - name: Build Jekyll site
+        run: JEKYLL_ENV=production bundle exec jekyll build
