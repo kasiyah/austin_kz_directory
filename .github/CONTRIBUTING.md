@@ -86,7 +86,7 @@ Rules:
 Recommended settings (Settings > Rules > Rulesets, and Settings > General):
 
 - Block force pushes and deletion of `main`.
-- Require the PR build check to pass, once it exists.
+- Require the PR build check to pass.
 - Turn on **Automatically delete head branches**.
 - Do not require a pull request for every push to `main`. The workflow bot pushes generated posts directly to `main`, and that rule would make it fail unless the bot is allowed to bypass it.
 
