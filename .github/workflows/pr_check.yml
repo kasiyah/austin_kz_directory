@@ -63,7 +63,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '3.3'
           bundler-cache: true
 
       # Builds the whole site including the freshly generated posts. A broken
