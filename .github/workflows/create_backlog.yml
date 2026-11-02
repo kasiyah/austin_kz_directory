@@ -1,0 +1,114 @@
+# =============================================================================
+# One-time helper: creates the labels and backlog issues for the project.
+#
+# How to use: save this file as .github/workflows/create_backlog.yml on the
+# main branch, then go to Actions -> "Create backlog issues" -> Run workflow.
+#
+# It is safe to run again: an issue is skipped if one with the same title
+# already exists (open or closed). To add more backlog items later, add them
+# to the list below and run it again.
+# =============================================================================
+name: Create backlog issues
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write   # needed to create labels and issues
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create labels and issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # ---- Labels (name|color|description). --force updates if it exists.
+          while IFS='|' read -r name color desc; do
+            gh label create "$name" --color "$color" --description "$desc" --force < /dev/null
+          done << 'LABELS'
+          data-quality|1d76db|Sheet and data checks
+          listings|0e8a16|How business listings look and work
+          maintenance|fbca04|Reliability, CI and upkeep
+          LABELS
+
+          # ---- The backlog: one entry per issue (labels are comma-separated).
+          cat > backlog.json << 'JSON'
+          [
+            {
+              "title": "Add dropdowns and required fields to the Google Sheet",
+              "labels": "data-quality",
+              "body": "Use Data > Data validation so Category, Region and Tags always use the same values (no more 'Beauty' vs 'beauty').\n\n- [ ] Dropdown for Category\n- [ ] Dropdown for Region\n- [ ] Dropdown for Tags\n- [ ] Make Business Name required\n- [ ] Write down the allowed values so new editors know them"
+            },
+            {
+              "title": "Add a Status column (Draft / Approved) and a Google Form for submissions",
+              "labels": "data-quality",
+              "body": "Only rows marked Approved should become posts. A Google Form lets businesses submit themselves, and nothing goes live until it is reviewed.\n\n- [ ] Add a Status column with a Draft / Approved dropdown\n- [ ] Update generate_posts.py to publish only Approved rows\n- [ ] Create the Google Form with the same fields as the sheet\n- [ ] Decide how form responses reach the main tab (Forms writes to its own tab) and make new rows default to Draft\n- [ ] Share the form link in the community chat"
+            },
+            {
+              "title": "Add a stable ID column so renames keep the same post and date",
+              "labels": "data-quality",
+              "body": "Right now a renamed business gets a new post with today's date. A stable ID lets the script treat it as the same business.\n\n- [ ] Add an ID column to the sheet\n- [ ] Fill missing IDs automatically with Apps Script\n- [ ] Store the ID in each post's front matter and match posts by ID\n- [ ] On rename: rename the file but keep the original date\n- [ ] Migrate existing posts (assign IDs to all current businesses)"
+            },
+            {
+              "title": "Add a validation report to generate_posts.py",
+              "labels": "data-quality",
+              "body": "Flag problem rows in the workflow log instead of publishing them silently.\n\n- [ ] Report rows with missing required fields\n- [ ] Report malformed emails and URLs\n- [ ] Report duplicate business names\n- [ ] Decide: skip invalid rows or publish with a warning\n- [ ] Show the report in the workflow run summary"
+            },
+            {
+              "title": "Make phone numbers click-to-call and addresses open in Google Maps",
+              "labels": "listings",
+              "body": "- [ ] Phone becomes a tel: link\n- [ ] Address becomes a Google Maps search link\n- [ ] Check both on a phone"
+            },
+            {
+              "title": "Add an Image column for logos and photos",
+              "labels": "listings",
+              "body": "- [ ] Add an Image column to the sheet\n- [ ] Write it to the post front matter as the preview image (Chirpy supports this)\n- [ ] Decide where images are hosted (repo folder or an external link)\n- [ ] Handle rows with no image (no broken placeholder)"
+            },
+            {
+              "title": "Add a Featured column and Featured / Recently added sections on the home page",
+              "labels": "listings",
+              "body": "- [ ] Add a Featured column to the sheet\n- [ ] Write it to the post front matter\n- [ ] Build a Featured section on the home page\n- [ ] Build a Recently added section (newest posts by date)"
+            },
+            {
+              "title": "Add a 'Suggest a correction' link to every post",
+              "labels": "listings",
+              "body": "- [ ] Create a prefilled Google Form or mailto link that includes the business name\n- [ ] Add the link to each generated post\n- [ ] Decide who receives and handles corrections"
+            },
+            {
+              "title": "Add a map view of all businesses (larger project)",
+              "labels": "listings",
+              "body": "- [ ] Geocode addresses once and store the coordinates (for example in new Latitude / Longitude columns) so lookups are not repeated\n- [ ] Build a map page, for example with Leaflet and OpenStreetMap\n- [ ] Link each marker to its business post\n- [ ] Handle businesses with no address"
+            },
+            {
+              "title": "Add a build check workflow for pull requests",
+              "labels": "maintenance",
+              "body": "Run 'jekyll build' on pull requests (without deploying) to catch broken front matter before it reaches main.\n\n- [ ] Create a workflow triggered by pull_request\n- [ ] Build the site without the deploy steps\n- [ ] Optionally add a link / HTML checker"
+            },
+            {
+              "title": "Enable Dependabot for GitHub Actions and Bundler",
+              "labels": "maintenance",
+              "body": "Get automatic pull requests when action or gem versions go stale (this would have caught the Node 20 and old Ruby problems).\n\n- [ ] Add .github/dependabot.yml for github-actions (weekly) and bundler (monthly)\n- [ ] Review and merge the first pull requests"
+            }
+          ]
+          JSON
+
+          # ---- Create each issue unless one with that exact title exists.
+          gh issue list --state all --limit 500 --json title --jq '.[].title' > existing_titles.txt < /dev/null
+
+          jq -c '.[]' backlog.json | while read -r item; do
+            title=$(jq -r '.title' <<< "$item")
+            labels=$(jq -r '.labels' <<< "$item")
+            body=$(jq -r '.body' <<< "$item")
+            if grep -Fxq -- "$title" existing_titles.txt; then
+              echo "Skipping existing issue: $title"
+              continue
+            fi
+            gh issue create --title "$title" --label "$labels" --body "$body" < /dev/null
+            sleep 2   # be gentle with GitHub's rate limits
+          done
