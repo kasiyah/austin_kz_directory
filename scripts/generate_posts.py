@@ -23,7 +23,7 @@ if df.empty or "Business Name" not in df.columns:
 posts_dir = "_posts"
 os.makedirs(posts_dir, exist_ok=True)
 
-# Set timezone (US Central)
+# Set timezone (US Central).
 central = ZoneInfo("America/Chicago")
 today = datetime.now(tz=central).strftime("%Y-%m-%d")
 
