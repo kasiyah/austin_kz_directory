@@ -8,12 +8,14 @@ on:
   repository_dispatch:
     types: [sheet_updated]
 
-  # runs when changes are pushed to the main branch or when the listed files are modified
+  # Runs when changes are pushed to main, except pushes that only touch
+  # generated posts or documentation files.
   push:
     branches: [main]
-    paths:
-      - 'scripts/generate_posts.py'
-      - '.github/workflows/auto_post_and_deploy.yml'
+    paths-ignore:
+      - '_posts/**'
+      - 'README.md'
+      - '.github/CONTRIBUTING.md'
 
 permissions:
   contents: write # needed to commit and push the generated posts
