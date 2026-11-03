@@ -1,14 +1,38 @@
 # =============================================================================
-# Dependabot configuration belongs in .github/dependabot.yml, not in
-# .github/workflows. Keep this workflow file as a valid GitHub Actions workflow.
+# Dependabot configuration: opens pull requests when dependencies go stale.
+# Save this file as .github/dependabot.yml on a branch and merge it via a
+# pull request.
 # =============================================================================
-name: Dependabot workflow placeholder
+version: 2
 
-on:
-  workflow_dispatch:
+updates:
+  # GitHub Actions used in .github/workflows (checkout, setup-python, ruby, ...).
+  # directory "/" makes Dependabot look in .github/workflows.
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "09:00"
+      timezone: America/Chicago
+    # Pull request titles start with "ci:", matching the ci/ branch type.
+    commit-message:
+      prefix: "ci"
 
-jobs:
-  configuration-location:
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "Dependabot configuration must be stored in .github/dependabot.yml"
+  # Ruby gems from Gemfile / Gemfile.lock (Jekyll, the Chirpy theme, plugins).
+  - package-ecosystem: bundler
+    directory: /
+    schedule:
+      interval: monthly
+    commit-message:
+      prefix: "chore"
+    # Minor and patch updates arrive together in ONE pull request per month.
+    # Major updates still come as separate pull requests so they can be
+    # reviewed on their own.
+    groups:
+      gems:
+        patterns:
+          - "*"
+        update-types:
+          - minor
+          - patch
