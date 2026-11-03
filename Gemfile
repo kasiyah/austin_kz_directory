@@ -3,7 +3,7 @@
 source "https://rubygems.org"
 
 # Fix for GitHub Actions build (sass-embedded 1.93.3 fails on Linux)
-gem "sass-embedded", "1.63.6"
+gem "sass-embedded", "1.107.1"
 
 gem 'jekyll-theme-chirpy', '~> 7.4', '>= 7.4.1'
 
