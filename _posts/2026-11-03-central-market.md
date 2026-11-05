@@ -1,6 +1,6 @@
 ---
 title: "Central Market"
-category: "Grocery & Food Retail"
+category: "Shops & Specialty Goods"
 date: 2026-11-03
 tags: []
 auto_generated: true

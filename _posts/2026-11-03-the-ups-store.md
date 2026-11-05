@@ -1,6 +1,6 @@
 ---
 title: "The UPS Store"
-category: "Notary & Shipping"
+category: "Notary & Translation"
 date: 2026-11-03
 tags: []
 auto_generated: true

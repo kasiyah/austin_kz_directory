@@ -1,6 +1,6 @@
 ---
 title: "FUSE HVAC & Appliance Repair Austin"
-category: "HVAC & Appliance Services"
+category: "Home Services"
 date: 2026-11-03
 tags: []
 auto_generated: true

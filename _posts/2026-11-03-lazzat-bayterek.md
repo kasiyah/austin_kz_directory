@@ -1,6 +1,6 @@
 ---
 title: "Lazzat Bayterek"
-category: "Mental & Emotional Health"
+category: "Health & Medical"
 date: 2026-11-03
 tags: []
 auto_generated: true

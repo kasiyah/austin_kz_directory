@@ -1,6 +1,6 @@
 ---
 title: "Cedar Park Pediatrics"
-category: "Pediatrics"
+category: "Pediatric Care"
 date: 2026-11-03
 tags: []
 auto_generated: true

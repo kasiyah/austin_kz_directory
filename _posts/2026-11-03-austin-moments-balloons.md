@@ -1,6 +1,6 @@
 ---
 title: "Austin Moments Balloons"
-category: "Event & Party Services"
+category: "Events & Party Services"
 date: 2026-11-03
 tags: []
 auto_generated: true

@@ -1,6 +1,6 @@
 ---
 title: "Amber Fairy TX"
-category: "Retail / Specialty Goods"
+category: "Shops & Specialty Goods"
 date: 2026-11-03
 tags: []
 auto_generated: true
