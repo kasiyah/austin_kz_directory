@@ -1,6 +1,6 @@
 ---
 title: "Any Lab Test Now"
-category: "Laboratory Testing"
+category: "Healthcare & Medical"
 date: 2026-11-03
 tags: []
 auto_generated: true

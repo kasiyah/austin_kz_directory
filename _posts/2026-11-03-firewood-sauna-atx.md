@@ -1,6 +1,6 @@
 ---
 title: "Firewood Sauna ATX"
-category: "Sauna & Wellness"
+category: "Beauty & Wellness"
 date: 2026-11-03
 tags: []
 auto_generated: true

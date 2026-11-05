@@ -1,6 +1,6 @@
 ---
 title: "Elephant Room"
-category: "Entertainment & Nightlife"
+category: "Entertainment & Attractions"
 date: 2026-11-03
 tags: []
 auto_generated: true

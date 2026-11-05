@@ -1,6 +1,6 @@
 ---
 title: "Yuliana Diaz"
-category: "\"Finance, Tax & Insurance\", Notary & Translation"
+category: "\"Tax, Finance & Insurance\""
 date: 2026-11-03
 tags: []
 auto_generated: true

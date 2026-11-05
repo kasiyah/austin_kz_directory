@@ -1,6 +1,6 @@
 ---
 title: "Trader Joe's"
-category: "Shops & Specialty Goods"
+category: "Grocery & Food Retail"
 date: 2026-11-03
 tags: []
 auto_generated: true

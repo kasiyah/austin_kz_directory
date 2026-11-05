@@ -1,6 +1,6 @@
 ---
 title: "Austin Aquarium"
-category: "Parks & Outdoors"
+category: "Family Fun & Indoor Play"
 date: 2026-11-03
 tags: []
 auto_generated: true
