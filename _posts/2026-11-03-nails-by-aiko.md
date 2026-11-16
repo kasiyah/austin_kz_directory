@@ -1,6 +1,6 @@
 ---
 title: "Nails by Aiko"
-category: "Beauty & Personal Care"
+category: "Beauty & Wellness"
 date: 2026-11-03
 tags: []
 auto_generated: true

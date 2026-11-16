@@ -1,6 +1,6 @@
 ---
 title: "Williamson County Tennis Center"
-category: "Sports & Recreation"
+category: "Sports & Fitness"
 date: 2026-11-03
 tags: []
 auto_generated: true

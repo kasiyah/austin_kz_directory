@@ -1,6 +1,6 @@
 ---
 title: "La La Sweet"
-category: "Bakery & Desserts"
+category: "\"Bakery, Cafes & Tea\""
 date: 2026-11-03
 tags: []
 auto_generated: true

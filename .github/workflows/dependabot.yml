@@ -1,0 +1,14 @@
+# =============================================================================
+# Dependabot configuration belongs in .github/dependabot.yml, not in
+# .github/workflows. Keep this workflow file as a valid GitHub Actions workflow.
+# =============================================================================
+name: Dependabot workflow placeholder
+
+on:
+  workflow_dispatch:
+
+jobs:
+  configuration-location:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Dependabot configuration must be stored in .github/dependabot.yml"

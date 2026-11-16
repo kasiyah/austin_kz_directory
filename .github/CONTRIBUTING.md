@@ -28,7 +28,7 @@ The "workflow bot" is `github-actions[bot]`, the identity the deploy workflow us
 |---|---|---|
 | `main` | Production. The deploy workflow publishes from it, and the workflow bot commits generated posts to it. | Permanent |
 | `<type>/<issue>-<description>` | One task, named as described below. | Deleted after merge |
-| `dependabot/...` | Created automatically by Dependabot (once enabled). Leave the names as they are. | Deleted after merge |
+| `dependabot/...` | Created automatically by Dependabot. Leave the names as they are. | Deleted after merge |
 
 We do not use `develop`, `staging`, or other long-lived branches. A pull request plus the PR build check is our safety step.
 

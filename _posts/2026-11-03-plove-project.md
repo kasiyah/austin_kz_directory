@@ -1,6 +1,6 @@
 ---
 title: "Plove Project"
-category: "Restaurant & Dining"
+category: "Restaurants"
 date: 2026-11-03
 tags: []
 auto_generated: true

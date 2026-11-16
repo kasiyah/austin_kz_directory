@@ -1,6 +1,6 @@
 ---
 title: "Duchman Family Winery"
-category: "Wineries & Vineyards"
+category: "Entertainment & Attractions"
 date: 2026-11-03
 tags: []
 auto_generated: true

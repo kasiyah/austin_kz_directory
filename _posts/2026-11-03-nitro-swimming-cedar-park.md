@@ -1,6 +1,6 @@
 ---
 title: "Nitro Swimming - Cedar Park"
-category: "Swimming & Aquatics"
+category: "Sports & Fitness"
 date: 2026-11-03
 tags: []
 auto_generated: true
