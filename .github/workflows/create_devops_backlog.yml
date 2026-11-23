@@ -17,7 +17,7 @@ on:
 permissions:
   contents: read
   issues: write
-  metadata: write
+  administration: write
 
 jobs:
   create:
