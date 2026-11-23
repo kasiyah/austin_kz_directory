@@ -1,0 +1,240 @@
+# =============================================================================
+# One-time helper: creates the labels, milestones and DevOps showcase backlog.
+#
+# How to use: save this file as .github/workflows/create_devops_backlog.yml on
+# the main branch, then go to Actions -> "Create DevOps backlog issues" ->
+# Run workflow.
+#
+# It is safe to run again: an issue is skipped if one with the same title
+# already exists (open or closed), and existing milestones are reused.
+# To add more backlog items later, add them to the list below and run it again.
+# =============================================================================
+name: Create DevOps backlog issues
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write   # needed to create labels, milestones and issues
+
+jobs:
+  create:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create labels, milestones and issues
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+
+          # ---- Labels (name|color|description). --force updates if it exists.
+          while IFS='|' read -r name color desc; do
+            gh label create "$name" --color "$color" --description "$desc" --force < /dev/null
+          done << 'LABELS'
+          devops|1d76db|Containers, Kubernetes, CI/CD, monitoring
+          terraform|7b42bc|Infrastructure as code
+          ai-agent|5319e7|Listing review agent
+          later|ededed|Parked until budget or domain is available
+          priority: high|d93f0b|Do first
+          priority: medium|fbca04|Do next
+          priority: low|c5def5|Nice to have
+          LABELS
+
+          # ---- Milestones (title|description). Existing ones are reused.
+          existing_ms=$(gh api "repos/$GH_REPO/milestones?state=all&per_page=100" --jq '.[].title' < /dev/null)
+          while IFS='|' read -r title desc; do
+            if grep -Fxq -- "$title" <<< "$existing_ms"; then
+              echo "Milestone exists: $title"
+              continue
+            fi
+            gh api "repos/$GH_REPO/milestones" -f title="$title" -f description="$desc" > /dev/null < /dev/null
+            echo "Created milestone: $title"
+          done << 'MILESTONES'
+          1 - Containers and hosting|Docker images, CI image builds, hosting decision for a private repo
+          2 - Kubernetes and Helm|Local Kubernetes (kind), Helm chart, CronJob, CI smoke test
+          3 - Observability|Prometheus, Grafana, exporters, dashboards, alerts
+          4 - Terraform|Terraform foundation, repo as code, kind as code, CI
+          5 - AI agent|Listing review agent (no paid API)
+          6 - Showcase docs|README, architecture diagram, decisions log
+          Later - needs domain or spend|Domain, DNS, custom domain, optional cloud VM
+          MILESTONES
+
+          # ---- The backlog: one entry per issue (labels are comma-separated).
+          cat > backlog.json << 'JSON'
+          [
+            {
+              "title": "Decide hosting before making the repo private",
+              "milestone": "1 - Containers and hosting",
+              "labels": "devops,priority: high",
+              "body": "GitHub Pages from a private repo needs a paid plan on the Free tier. Decide before switching the repo to private, otherwise the deploy stops working.\n\nOptions:\n- GitHub Pro (about $4/month): keeps Pages, adds branch protection and more Actions minutes\n- Cloudflare Pages ($0): rebuild the deploy step, works with a private repo\n- Keep the repo public, or split into a public site repo and a private repo\n\n- [ ] Choose an option and note it in docs/decisions.md\n- [ ] Migrate the deploy job if needed\n- [ ] Verify the 'Publish to site' flow still works end to end"
+            },
+            {
+              "title": "Dockerize the Jekyll build (multi-stage, nginx)",
+              "milestone": "1 - Containers and hosting",
+              "labels": "devops,priority: high",
+              "body": "Multi-stage Dockerfile: a Ruby stage builds the site, an nginx stage serves _site.\n\n- [ ] Image builds locally and serves the site on localhost\n- [ ] Pinned base image versions\n- [ ] Runs as a non-root user\n- [ ] .dockerignore added"
+            },
+            {
+              "title": "Add docker-compose for local development",
+              "milestone": "1 - Containers and hosting",
+              "labels": "devops,priority: high",
+              "body": "- [ ] Jekyll service with live reload\n- [ ] Service for running generate_posts.py\n- [ ] 'docker compose up' gives a working local site with no Ruby install\n- [ ] Documented in the README"
+            },
+            {
+              "title": "Containerize the post generator script",
+              "milestone": "1 - Containers and hosting",
+              "labels": "devops,priority: high",
+              "body": "Small Python image for scripts/generate_posts.py.\n\n- [ ] Sheet CSV URL passed as an environment variable\n- [ ] Same image usable locally, in compose, in CI and later in Kubernetes"
+            },
+            {
+              "title": "Build and push images to GHCR from GitHub Actions",
+              "milestone": "1 - Containers and hosting",
+              "labels": "devops,priority: high",
+              "body": "- [ ] Build on pull requests (no push), push on main\n- [ ] Tag with commit SHA and latest\n- [ ] Vulnerability scan with Trivy\n- [ ] Keep images small and prune old tags (the free plan has limited Packages storage for private repos)\n- [ ] Keep an eye on Actions minutes (the free plan has a monthly allowance for private repos)"
+            },
+            {
+              "title": "Run the site on a local kind cluster with plain manifests",
+              "milestone": "2 - Kubernetes and Helm",
+              "labels": "devops,priority: high",
+              "body": "- [ ] Deployment, Service and Ingress for the nginx image\n- [ ] Liveness and readiness probes\n- [ ] Resource requests and limits\n- [ ] Site reachable through the ingress on localhost"
+            },
+            {
+              "title": "Package the deployment as a Helm chart",
+              "milestone": "2 - Kubernetes and Helm",
+              "labels": "devops,priority: high",
+              "body": "- [ ] Chart in charts/directory/\n- [ ] Values for image tag, replicas, resources, ingress host\n- [ ] helm lint and helm template run in CI"
+            },
+            {
+              "title": "Add a CronJob for scheduled post regeneration",
+              "milestone": "2 - Kubernetes and Helm",
+              "labels": "devops,priority: medium",
+              "body": "Runs the generator image on a schedule, as an alternative to the Sheet-triggered workflow.\n\n- [ ] Sheet CSV URL stored in a Secret or ConfigMap\n- [ ] Job history limits and failure handling configured"
+            },
+            {
+              "title": "Add a kind smoke test to CI",
+              "milestone": "2 - Kubernetes and Helm",
+              "labels": "devops,priority: medium",
+              "body": "Start kind in a GitHub Actions job, helm install, and check the site responds with 200.\n\n- [ ] Fails the pull request if the check fails\n- [ ] Only runs when chart or image files change (path filters)\n- [ ] Image layers cached to save Actions minutes"
+            },
+            {
+              "title": "Install Prometheus and Grafana locally with kube-prometheus-stack",
+              "milestone": "3 - Observability",
+              "labels": "devops,priority: medium",
+              "body": "- [ ] Installed with Helm using a values file kept in the repo\n- [ ] Prometheus and Grafana reachable via port-forward\n- [ ] Install steps documented"
+            },
+            {
+              "title": "Expose nginx metrics (exporter sidecar and ServiceMonitor)",
+              "milestone": "3 - Observability",
+              "labels": "devops,priority: medium",
+              "body": "- [ ] nginx exporter added to the chart as a sidecar\n- [ ] ServiceMonitor picked up by Prometheus\n- [ ] Request rate and status codes visible in Prometheus"
+            },
+            {
+              "title": "Build a Grafana dashboard and alert rule as code",
+              "milestone": "3 - Observability",
+              "labels": "devops,priority: medium",
+              "body": "- [ ] Dashboard JSON committed to the repo and loaded automatically\n- [ ] Panels: request rate, error rate, latency, pod restarts\n- [ ] Alert rule if the site is down for more than 5 minutes"
+            },
+            {
+              "title": "Set up Terraform foundation with remote state",
+              "milestone": "4 - Terraform",
+              "labels": "terraform,priority: medium",
+              "body": "- [ ] infra/ directory with pinned provider versions\n- [ ] .terraform.lock.hcl committed\n- [ ] Remote state on a free tier (for example HCP Terraform), never in git\n- [ ] *.tfstate and *.tfvars in .gitignore\n- [ ] Secrets only in CI secrets"
+            },
+            {
+              "title": "Manage repo labels and milestones with Terraform",
+              "milestone": "4 - Terraform",
+              "labels": "terraform,priority: medium",
+              "body": "- [ ] Labels and milestones defined with the GitHub provider\n- [ ] Existing ones imported, not recreated\n- [ ] terraform plan shows no drift\n- [ ] Branch protection only if the plan supports it for private repos"
+            },
+            {
+              "title": "Manage the kind cluster and Helm releases with Terraform",
+              "milestone": "4 - Terraform",
+              "labels": "terraform,priority: low",
+              "body": "- [ ] kind cluster created by Terraform\n- [ ] Site chart and monitoring stack installed through the Helm provider\n- [ ] terraform destroy cleanly tears everything down"
+            },
+            {
+              "title": "Add a Terraform CI workflow",
+              "milestone": "4 - Terraform",
+              "labels": "terraform,priority: medium",
+              "body": "- [ ] On pull requests: fmt -check, validate, tflint, Trivy config scan, plan\n- [ ] apply is a manual workflow_dispatch (approval gates are limited on the free plan for private repos)\n- [ ] Plan output visible on the pull request"
+            },
+            {
+              "title": "Design the listing review agent and define its scope",
+              "milestone": "5 - AI agent",
+              "labels": "ai-agent,priority: medium",
+              "body": "Short design doc in docs/agent.md.\n\nThe agent reads Draft rows from the sheet and reports missing or malformed fields, likely duplicates, and suggested tags and a short description. It never publishes on its own; a human approves.\n\n- [ ] Inputs, outputs and failure behavior documented\n- [ ] No paid API required for the baseline version"
+            },
+            {
+              "title": "Implement rule-based checks and tag suggestions",
+              "milestone": "5 - AI agent",
+              "labels": "ai-agent,priority: medium",
+              "body": "Works without any LLM. Related to #58, #61 and #77.\n\n- [ ] Required-field, phone and address format checks\n- [ ] Duplicate detection\n- [ ] Tag suggestions from keywords, using the tag list from #77\n- [ ] Output as a JSON or Markdown report\n- [ ] Runs from the container image"
+            },
+            {
+              "title": "Optional: add a local LLM step with Ollama",
+              "milestone": "5 - AI agent",
+              "labels": "ai-agent,priority: low",
+              "body": "- [ ] Ollama in a container, small model, runs locally or in the kind cluster\n- [ ] LLM step is optional; the pipeline works without it\n- [ ] Used for descriptions and tag suggestions, with output reviewed by a human"
+            },
+            {
+              "title": "Run the agent on a schedule and post the report to a GitHub issue",
+              "milestone": "5 - AI agent",
+              "labels": "ai-agent,priority: medium",
+              "body": "- [ ] CronJob in the local cluster (or Actions with the rule-based version only)\n- [ ] Report posted as an issue comment\n- [ ] Nothing changes without human approval"
+            },
+            {
+              "title": "Add agent metrics to the Grafana dashboard",
+              "milestone": "5 - AI agent",
+              "labels": "ai-agent,priority: low",
+              "body": "- [ ] Metrics for runs, failures, rows checked and issues found\n- [ ] Panel added to the dashboard JSON"
+            },
+            {
+              "title": "Add an architecture diagram and write the README",
+              "milestone": "6 - Showcase docs",
+              "labels": "devops,priority: medium",
+              "body": "- [ ] Diagram: Sheet, Actions, hosting, Kubernetes, monitoring, agent\n- [ ] 'What I built and why' section\n- [ ] Quick start for running everything locally"
+            },
+            {
+              "title": "Write a decisions log",
+              "milestone": "6 - Showcase docs",
+              "labels": "devops,priority: low",
+              "body": "docs/decisions.md\n\n- [ ] Why Pages plus a local Kubernetes deployment\n- [ ] Hosting choice for a private repo\n- [ ] What would change at real scale\n- [ ] Trade-offs and cost choices"
+            },
+            {
+              "title": "Buy a domain and manage DNS with Terraform",
+              "milestone": "Later - needs domain or spend",
+              "labels": "terraform,later,priority: low",
+              "body": "Parked until the rest of the showcase is in good shape.\n\n- [ ] Choose a registrar with clear renewal pricing\n- [ ] DNS hosted on a provider with a Terraform provider\n- [ ] Records managed in Terraform"
+            },
+            {
+              "title": "Attach the custom domain to hosting",
+              "milestone": "Later - needs domain or spend",
+              "labels": "devops,later,priority: low",
+              "body": "- [ ] Custom domain configured with HTTPS\n- [ ] Jekyll url and baseurl updated\n- [ ] Old address still redirects\n- [ ] Publish workflow still deploys correctly"
+            },
+            {
+              "title": "Optional: provision a small cloud VM with k3s using Terraform",
+              "milestone": "Later - needs domain or spend",
+              "labels": "terraform,later,priority: low",
+              "body": "Only if budget allows.\n\n- [ ] VM and firewall rules in Terraform\n- [ ] Helm chart deployed to it\n- [ ] Teardown documented to control cost"
+            }
+          ]
+          JSON
+
+          # ---- Create each issue unless one with that exact title exists.
+          gh issue list --state all --limit 500 --json title --jq '.[].title' > existing_titles.txt < /dev/null
+
+          jq -c '.[]' backlog.json | while read -r item; do
+            title=$(jq -r '.title' <<< "$item")
+            milestone=$(jq -r '.milestone' <<< "$item")
+            labels=$(jq -r '.labels' <<< "$item")
+            body=$(jq -r '.body' <<< "$item")
+            if grep -Fxq -- "$title" existing_titles.txt; then
+              echo "Skipping existing issue: $title"
+              continue
+            fi
+            gh issue create --title "$title" --milestone "$milestone" --label "$labels" --body "$body" < /dev/null
+            sleep 2   # be gentle with GitHub's rate limits
+          done
