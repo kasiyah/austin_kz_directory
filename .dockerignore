@@ -1,0 +1,26 @@
+# Version control and CI
+.git
+.github
+
+# Build output and caches
+_site
+.jekyll-cache
+.sass-cache
+.bundle
+vendor
+node_modules
+
+# Container and infra files (not needed to build the site)
+Dockerfile
+docker-compose*.yml
+.dockerignore
+infra
+charts
+.terraform
+*.tfstate
+*.tfstate.*
+*.tfvars
+
+# Secrets
+.env
+.env.*
